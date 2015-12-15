@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html ng-app="redshift-agility-app" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="assets/ico/favicon.ico">
+
+    <title>Agility Redshift Launcher</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <script src="assets/js/jquery-1.11.3.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/modernizr.js"></script>
+    <script src="assets/js/angular.min.js"></script>
+    <script>document.write('<base href="' + document.location + '" />');</script>
+    <script src="apps.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html" >Redshift Cluster Launch</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">HOME</a></li>
+            <li><a href="about.html">DOCS</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+	<!-- *****************************************************************************************************************
+	 HEADERWRAP
+	 ***************************************************************************************************************** -->
+	<div id="headerwrap">
+	    <div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+                    <img src="assets/img/csclogo.png">
+					<!--<h3>CSC </h3>-->
+					<h1>Agility Platform Redshift Cluster Launcher</h1>
+					<h5>This site will allow you to launch and configure an AWS Redshift Cluster</h5>
+                    <br>
+                    <br>
+                    <br>
+				</div>
+            <!-- <div ng-controller="clusterDetails"> -->
+                <form ng-controller="clusterDetails" ng-submit="submit()" class="form-horizontal"> 
+                    <div class="hideORshow" ng-hide="showme">
+                    <div class="row centered">
+                        
+                        <div class="col-md-4">
+                            <img src= assets/img/redshift.png style="width:30px;height:30px;">
+                            <h4>Cluster Configuration</h4>
+                            <br>
+                            <!--<label>Password</label> ng-init="param='selectedItem';" ng-change="changedValue(selectedItem)"   -->
+                            <p>Select Region</p>
+                            <select ng-model="select.selectedItem" ng-options="region as region.name for region in regions"></select>
+                            <p>Enter Database Name</p>
+                            <input type="text" ng-model="select.cluster.dbname"/> 
+                            <br>
+                            <p>Enter Database Port</p>
+                            <input type="text" ng-init="select.cluster.port=5439" ng-model="select.cluster.port"/> 
+                            <br>
+                            <p>Enter Master Username</p>
+                            <input type="text" name="username" ng-model="select.cluster.username" ng-minlength="3" ng-maxlength="8">
+                            <br>
+                            
+                            <p>Enter Password</p>
+                            <input type="password" ng-model="select.cluster.password" id="pw1" name="pw1" ng-model="pw1" ng-required/>
+                            <br>
+                            
+                            <p>Renter Password</p>
+                            <input type="password" id="pw2" name="pw2" ng-model="pw2" ng-required pw-check="pw1"/> 
+                            <div class="msg-block" ng-show="myForm.$error">
+                                <span class="msg-error" ng-show="myForm.pw2.$error.pwmatch">
+                                    Passwords don't match.
+                                </span>
+                            </div>
+                            
+                        </div>
+
+                        <div class="col-md-4">
+                            <img src= assets/img/redshift.png style="width:30px;height:30px;">
+                            <h4>Node Configuration</h4>
+                            <br>
+                            <p>Select Node Type</p>
+                            <select ng-init="select.selectedNode = machines[0]" ng-model="select.selectedNode" ng-options="machine as machine.name for machine in machines" required></select>
+                            <br>
+                            <p>Node Details</p>
+                            <table id="table-design" class="rwd-table" style="width:100%">
+                            <style>
+                                table, th, td {
+                                    border: 1px solid black;
+                                }
+                            </style>
+                            <tbody>
+                              <tr>
+                                <td>CPU Count: {{ select.selectedNode.cpu }} elastic compute units</td>
+                              </tr>
+                              <tr>
+                                <td>Memory: {{ select.selectedNode.memory }}</td>
+                              </tr>
+                              <tr>
+                                <td>Storage: {{ select.selectedNode.storage }}</td>
+                              </tr>
+                              <tr>
+                                <td>Input/Output: {{ select.selectedNode.io }}</td>
+                              </tr>
+                            </tbody>
+                            </table>
+                            
+                            <p>Cluster Type</p>
+                            <section ng-show="select.selectedNode.opt == 's'">
+                                <select ng-init="select.selectedType = dualSingleNode[1]" ng-model="select.selectedType" ng-options="n as n.name for n in dualSingleNode" ></select>
+                            </section> 
+                            <section ng-show="select.selectedNode.opt == 'd'">
+                                <select ng-init="select.selectedType = dualNode[0]" ng-model="select.selectedType" ng-options="x as x.name for x in dualNode" ></select>
+                            </section> 
+                            
+                            <p>Number of Compute Nodes</p>
+                            <section ng-show="select.selectedType.id == 1" ng-model="selectedNodeCount" ng-init="select.selectedType = 1">
+                                Mandatory Value: 1 Node
+                            </section>
+                            <section ng-show="select.selectedType.id == 2">
+                                <small>2 - {{maxNodeVal}} Nodes </small>
+                                <br>
+                                <input type="text" size="7" ng-model="select.selectedNodeCount" ng-keypress="filterValue($event)" /> 
+                            </section>
+
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <img src= assets/img/redshift.png style="width:30px;height:30px;">
+                            <h4>Additional Configuration</h4>
+                            <br>
+                            <p>Encrypt Database</p>
+                            <select ng-model="select.selectedEncryption" ng-options="enc as enc.name for enc in encryption"></select>
+                            <br>
+                            <p>Publicly Accessible IP</p>
+                            <select ng-model="select.selectedPubAccessible" ng-options="pub as pub.name for pub in pubAccessible"></select>
+                            <br>
+                            <br>
+                            <p style="color:red;">&diams;</p>
+                            <p> VPC settings are not revealed here for security reasons. Ask your AWS admin to create a VPC for you. Please note that if you select a port other than 5439, you will have to put in a request with your AWS admin.</p>
+                            <p style="color:red;">&diams;</p>
+                        </div>	
+                        </div>	
+                        <button class="btn btn-theme" action="about.html" ng-click="showme=true">Submit</button>
+                    </div>
+                    <br>
+                    
+                    
+                  <pre ng-show="showme">
+                  {{ Results = pretty }}
+                  <h4>Your Cluster Details</h4>
+                  
+                  <div align="centerino">
+Region: {{ select.selectedItem.name }}
+DB Name: {{ select.cluster.dbname }}
+Redshift Port: {{ select.cluster.port }}
+Username: {{ select.cluster.username }}
+Node Type: {{ select.selectedNode.name }}
+Nodes: {{ select.selectedNodeCount }}
+Encryption: {{ select.selectedEncryption.name }} 
+Public IP: {{ select.selectedPubAccessible.name }}
+                  </div>
+                  
+                  <p style="color:red;">
+                  If you would like to make changes, refresh. Changes are final once you run the operational script in Agility as outlined in the docs.</p>
+                  </pre>
+                
+                    
+                </form>
+            <br>
+            <br>
+            
+			</div><!-- /row -->
+	    </div> <!-- /container -->
+	</div><!-- /headerwrap -->
+
+	 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="assets/js/retina-1.1.0.js"></script>
+	<script src="assets/js/jquery.hoverdir.js"></script>
+	<script src="assets/js/jquery.hoverex.min.js"></script>
+	<script src="assets/js/jquery.prettyPhoto.js"></script>
+  	<script src="assets/js/jquery.isotope.min.js"></script>
+  	<script src="assets/js/custom.js"></script>
+
+  </body>
+</html>
