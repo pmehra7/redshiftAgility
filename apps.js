@@ -98,7 +98,7 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
         $http({
             withCredentials: false,
             method: 'POST',
-            url: 'http://localhost:8887/form', 
+            url: 'https://localhost:4443', 
             headers: {'Content-Type': 'Access-Control-Allow-Origin: *'},
             data: $scope.pretty
         });
