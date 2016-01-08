@@ -14,7 +14,6 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
     // We will keep VA (represent!) as default  
     $scope.select = {};
     $scope.select.selectedItem = { id: 'us-east-1', name: 'US East (N. Virginia)'};
-    //$scope.select.selectedItemOLD = 'us-east-1';
     
     // Constructs URL to get Amazon pricing 
     $scope.$watch('selectedItem', function(newValue, oldValue) { 
@@ -27,6 +26,7 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
     }); 
     
     $scope.select.cluster = {};
+    
     $scope.machines = [
         { id: 1, name: 'dc1.large', cpu: "7", memory: "15GB per node", storage: "160GB SSD", io: "moderate", price:0.25, opt:"s", max:"32"},
         { id: 2, name: 'dc1.8xlarge', cpu: "104", memory: "244GB per node", storage: "2.56TB SSD", io: "very high", price:4.8, opt:"d", max:"100"},
@@ -44,6 +44,14 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
         $scope.nodePatternCheck = "/^[2-" + newValue.max + "]+$/"; 
     });
     
+    $scope.mouseSwitch = false; 
+    
+    $scope.IsVisible = false;
+    $scope.ShowHide = function () {
+        //If DIV is visible it will be hidden and vice versa.
+        $scope.IsVisible = $scope.IsVisible ? false : true;
+    };
+
     $scope.dualSingleNode = [
         { id: 1, name: 'Single Node'},
         { id: 2, name: 'Multiple Node'}];
@@ -63,7 +71,6 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
             $scope.select.selectedNodeCount = 2; 
         }
     });
-    
     
     $scope.encryption = [
         { id: 1, name: 'None'},
@@ -90,7 +97,8 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
         }
         var headers = {
             'Access-Control-Allow-Origin' : '*',
-            'Access-Control-Allow-Methods' : 'POST, GET, OPTIONS, PUT',
+            //'Access-Control-Allow-Methods' : 'POST, GET, OPTIONS, PUT',
+            'Access-Control-Allow-Methods' : 'POST, GET, PUT',
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         };        
@@ -103,10 +111,6 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
             data: $scope.pretty
         });
     };
-    
-    //$scope.wasSubmitted = false;
-    //$scope.submit = function() { 
-    //    $scope.wasSubmitted = true; }; 
     
     $scope.filterValue = function($event){
         if(isNaN(String.fromCharCode($event.keyCode))){
@@ -121,27 +125,14 @@ app.controller("clusterDetails",['$scope', '$http', function($scope, $http, $htt
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
     }
 ])
-//.config(function($httpProvider){delete $httpProvider.defaults.headers.common['X-Requested-With'];})
-.directive('pwCheck', [function () {
-    return {
-      require: 'ngModel',
-      link: function (scope, elem, attrs, ctrl) {
-        var firstPassword = '#' + attrs.pwCheck;
-        elem.add(firstPassword).on('keyup', function () {
-          scope.$apply(function () {
-            var v = elem.val()===$(firstPassword).val();
-            ctrl.$setValidity('pwmatch', v);
-          });
-        });
-      }
+.directive('wjValidationError', function () {
+  return {
+    require: 'ngModel',
+    link: function (scope, elm, attrs, ctl) {
+      scope.$watch(attrs['wjValidationError'], function (errorMsg) {
+        elm[0].setCustomValidity(errorMsg);
+        ctl.$setValidity('wjValidationError', errorMsg ? false : true);
+      });
     }
-}]);
-
-/**
-app.all("/api/*", function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost");
-  res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
-  return next();
+  };
 });
-**/
