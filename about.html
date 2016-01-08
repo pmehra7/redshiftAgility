@@ -70,13 +70,32 @@
 		 		<h3>Documentation for AWS Redshift on Agility</h3>
                 <br>
                 <h4>Background Information on AWS Redshift</h4>
-		 		<p></p>
+		 		<p>Link: <a href="https://aws.amazon.com/redshift/">AWS Redshift Docs</a><br>Amazon Redshift is a fast, fully managed, petabyte-scale data warehouse that makes it simple and cost-effective to analyze all your data using your existing business intelligence tools.
+                </p>
                 <br>
                 <h4>Instructions to Launch your Redshift Cluster</h4>
-		 		<p></p>
+		 		<p>
+                1. Fill out the Cluster Launch Form and press Submit<br>
+                2. Put in your AWS key and secret into the respective variable fields<br>
+                3. Ask your admin to create a VPC security group and send the ID (e.g sg-3a907211)<br>
+                4. Put in your VPC id into the respective variable field<br>
+                5. Go back to the Agility Platform UI and run the "Cluster Launch" Operational Script
+                </p>
                 <br>
                 <h4>How to Access your Redshift Environment</h4>
-		 		<p></p>
+		 		<p>
+                After a few minutes, the operational script will run. The script will yield an endpoint.<br>
+                Use the following instructions to access the endpoint - <a href="https://aws.amazon.com/redshift/">Redshift Connect Info</a><br>
+                Download either the JDBC or ODBC Driver. The links below contain more instructions and links to the downloads<br>
+                Use either the SQL Workbench or a Partner Tool to connect to Redshift<br>
+                <br>
+                <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/configure-jdbc-options.html">JDBC Driver Configuration</a><br>
+                <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/configure-odbc-connection.html">ODBC Driver Configuration</a><br>
+                <br>
+                <a href="https://aws.amazon.com/redshift/partners/">AWS Redshift Partners</a><br>
+                <a href="http://www.sql-workbench.net/manual/install.html">SQL Workbench/J</a><br>
+                *In the event of an error, view the script output*
+                </p>
 		 	
 	 		</div>
 	 	</div><! --/row -->
