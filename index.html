@@ -63,7 +63,7 @@
                     <br>
 				</div>
             <!-- <div ng-controller="clusterDetails"> -->
-                <form ng-controller="clusterDetails" ng-submit="submit()" class="form-horizontal"> 
+                <form name="myForm" ng-controller="clusterDetails" ng-submit="submit()" class="form-horizontal"> 
                     <div class="hideORshow" ng-hide="showme">
                     <div class="row centered">
                         
@@ -75,26 +75,35 @@
                             <p>Select Region</p>
                             <select ng-model="select.selectedItem" ng-options="region as region.name for region in regions"></select>
                             <p>Enter Database Name</p>
-                            <input type="text" ng-model="select.cluster.dbname"/> 
+                            <input name="DBName" type="text" ng-model="select.cluster.dbname" pattern="^[a-zA-Z][a-zA-Z0-9]+$" required="true" ng-mouseenter="mouseSwitch = 1" ng-mouseleave="mouseSwitch =2 "/> 
+                            <div ng-show="mouseSwitch==1">
+                                <div ng-show="myForm.DBName.$invalid" style="color:maroon" role="alert">Alphanumeric. Start with Character</div>
+                            </div>
                             <br>
                             <p>Enter Database Port</p>
-                            <input type="text" ng-init="select.cluster.port=5439" ng-model="select.cluster.port"/> 
+                            <input name="port" type="number" ng-init="select.cluster.port=5439" ng-model="select.cluster.port" min="1" max="65535" required/> 
+                            <div ng-show="select.cluster.port == null" style="color:maroon" role="alert">Ports 1-65535 Only</div>
+                            
                             <br>
                             <p>Enter Master Username</p>
-                            <input type="text" name="username" ng-model="select.cluster.username" ng-minlength="3" ng-maxlength="8">
+                            <input type="text" name="username" ng-model="select.cluster.username" ng-minlength="3" ng-maxlength="16" pattern="^[a-z]+" required="true" ng-mouseenter="mouseSwitch = 3" ng-mouseleave="mouseSwitch = 4">
+                            <div ng-show="mouseSwitch==3">
+                                <div ng-show="select.cluster.username == null" style="color:maroon" role="alert">3-16 lowercase (a-z) chars</div>
+                            </div>
                             <br>
                             
                             <p>Enter Password</p>
-                            <input type="password" ng-model="select.cluster.password" id="pw1" name="pw1" ng-model="pw1" ng-required/>
+                            <input name="pass" type="password" ng-model="select.cluster.password" id="pw1" name="pw1"  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,16}$" required="True" ng-mouseenter="mouseSwitch = 5" ng-mouseleave="mouseSwitch =6"/>
+                            <div ng-show="mouseSwitch==5">
+                                <div ng-show="myForm.pass.$invalid" style="color:maroon" role="alert">8-16 chars. Atleast 1 lowercase, uppercase, and number. No special chars</div>
+                            </div>
                             <br>
                             
                             <p>Renter Password</p>
-                            <input type="password" id="pw2" name="pw2" ng-model="pw2" ng-required pw-check="pw1"/> 
-                            <div class="msg-block" ng-show="myForm.$error">
-                                <span class="msg-error" ng-show="myForm.pw2.$error.pwmatch">
-                                    Passwords don't match.
-                                </span>
-                            </div>
+                            <input type="password" ng-model="chkPwd" id="pw2" name="pw2" ng-required wj-validation-error="chkPwd != select.cluster.password ? 'Passwords don\'t match' : ''" /> 
+                            <br>
+                            <div ng-show="chkPwd != select.cluster.password" style="color:maroon" role="alert">Passwords Do Not Match</div>
+            
                             
                         </div>
 
@@ -164,30 +173,34 @@
                             <p style="color:red;">&diams;</p>
                         </div>	
                         </div>	
-                        <button class="btn btn-theme" action="about.html" ng-click="showme=true">Submit</button>
+                        <button class="btn btn-theme" action="about.html" ng-click="showme=true" ng-disabled="myForm.$invalid">Submit</button>
                     </div>
                     <br>
-                    
-                    
+                   
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-4">
                   <pre ng-show="showme">
-                  {{ Results = pretty }}
+                  <!--{{ Results = pretty }}--> 
                   <h4>Your Cluster Details</h4>
                   
                   <div align="centerino">
-Region: {{ select.selectedItem.name }}
-DB Name: {{ select.cluster.dbname }}
-Redshift Port: {{ select.cluster.port }}
-Username: {{ select.cluster.username }}
-Node Type: {{ select.selectedNode.name }}
-Nodes: {{ select.selectedNodeCount }}
-Encryption: {{ select.selectedEncryption.name }} 
-Public IP: {{ select.selectedPubAccessible.name }}
+                            <div class="pong"><b>Region:</b> {{ select.selectedItem.name }}</div>
+                            <div class="pong"><b>DB Name:</b> {{ select.cluster.dbname }}</div>
+                            <div class="pong"><b>Redshift Port:</b> {{ select.cluster.port }}</div>
+                            <div class="pong"><b>Username:</b> {{ select.cluster.username }}</div>
+                            <div class="pong"><b>Node Type:</b> {{ select.selectedNode.name }}</div>
+                            <div class="pong"><b>Nodes:</b> {{ select.selectedNodeCount }}</div>
+                            <div class="pong"><b>Encryption:</b> {{ select.selectedEncryption.name }}</div>
+                            <div class="pong"><b>Public IP:</b> {{ select.selectedPubAccessible.name }}</div>
                   </div>
                   
-                  <p style="color:red;">
-                  If you would like to make changes, refresh. Changes are final once you run the operational script in Agility as outlined in the docs.</p>
+                  <div class="pong" style="color:red;word-wrap: break-word;" align="justify">
+If you would like to make changes, resubmit. 
+Changes are final once you run the 
+operational script in Agility as outlined in the docs.</div>
                   </pre>
-                
+                </div>
                     
                 </form>
             <br>
